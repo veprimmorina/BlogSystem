@@ -10,8 +10,8 @@ using System.Reflection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using BlogSystem.Infrastructure.Repositories;
-using BlogSystem.Api.DTO;
 using BlogSystem.Core.Validators;
+using BlogSystem.Core.DTO;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
@@ -53,7 +53,7 @@ builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
-builder.Services.AddScoped<IValidator<BlogPostDTO>, BlogPostDtoValidator>();
+builder.Services.AddScoped<IValidator<BlogPostDto>, BlogPostDtoValidator>();
 
 builder.Services.AddMvc()
         .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());

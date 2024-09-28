@@ -1,4 +1,4 @@
-﻿namespace BlogSystem.Api.DTO
+﻿namespace BlogSystem.Core.DTO
 {
     public class ReplyCommentDTO
     {

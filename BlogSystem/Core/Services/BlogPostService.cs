@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BlogSystem.Api.DTO;
+using BlogSystem.Core.DTO;
 using BlogSystem.Core.Models;
 using BlogSystem.Infrastructure.Repositories;
 using FluentValidation;
@@ -9,10 +9,10 @@ namespace BlogSystem.Core.Services
     public class BlogPostService : IBlogService
     {
         private readonly IBlogPostRepository _blogPostRepository;
-        private readonly IValidator<BlogPostDTO> _BlogPostDTOValidator;
+        private readonly IValidator<BlogPostDto> _BlogPostDTOValidator;
         private readonly IMapper _mapper;
 
-        public BlogPostService(IBlogPostRepository blogPostRepository, IValidator<BlogPostDTO> BlogPostDTOValidator, IMapper mapper)
+        public BlogPostService(IBlogPostRepository blogPostRepository, IValidator<BlogPostDto> BlogPostDTOValidator, IMapper mapper)
         {
 
             _blogPostRepository = blogPostRepository;
@@ -24,13 +24,13 @@ namespace BlogSystem.Core.Services
         public BlogPost CreateBlogPost(BlogPost blogPost)
         {
 
-            var BlogPostDTO = _mapper.Map<BlogPost, BlogPostDTO>(blogPost);
+            var BlogPostDTO = _mapper.Map<BlogPost, BlogPostDto>(blogPost);
             validateBlogPost(BlogPostDTO);
             return _blogPostRepository.Create(blogPost);
 
         }
 
-        public bool validateBlogPost(BlogPostDTO BlogPostDTO)
+        public bool validateBlogPost(BlogPostDto BlogPostDTO)
         {
 
             var validationResult = _BlogPostDTOValidator.Validate(BlogPostDTO);
@@ -59,19 +59,19 @@ namespace BlogSystem.Core.Services
 
         }
 
-        public async Task<List<BlogPostDTO>> FilterBlogPosts(DateTime? startDate, DateTime? endDate, List<string> tags)
+        public async Task<List<BlogPostDto>> FilterBlogPosts(DateTime? startDate, DateTime? endDate, List<string> tags)
         {
 
             var blogPosts = await _blogPostRepository.FilterBlogPosts(startDate, endDate, tags);
-            return _mapper.Map<List<BlogPostDTO>>(blogPosts);
+            return _mapper.Map<List<BlogPostDto>>(blogPosts);
 
         }
 
-        public async Task<List<BlogPostDTO>> GetAllBlogPostsAsync()
+        public async Task<List<BlogPostDto>> GetAllBlogPostsAsync()
         {
 
             var blogPosts = await _blogPostRepository.GetAllBlogPostsAsync();
-            return _mapper.Map<List<BlogPostDTO>>(blogPosts);
+            return _mapper.Map<List<BlogPostDto>>(blogPosts);
 
         }
 
@@ -82,11 +82,11 @@ namespace BlogSystem.Core.Services
 
         }
 
-        public async Task<List<BlogPostDTO>> SearchBlogPostsByTitle(string searchTerm)
+        public async Task<List<BlogPostDto>> SearchBlogPostsByTitle(string searchTerm)
         {
 
             var blogPosts = await _blogPostRepository.SearchBlogPostsByTitle(searchTerm);
-            return _mapper.Map<List<BlogPostDTO>>(blogPosts);
+            return _mapper.Map<List<BlogPostDto>>(blogPosts);
 
         }
 

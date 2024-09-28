@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BlogSystem.Api.DTO;
+using BlogSystem.Core.DTO;
 using BlogSystem.Core.Models;
 using BlogSystem.Core.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -28,14 +28,14 @@ namespace BlogSystem.Controllers
 
         [Authorize(Roles = "Administrator,Creator")]
         [HttpPost]
-        public async Task<IActionResult> CreateBlogPost([FromBody] BlogPostDTO blogDto)
+        public async Task<IActionResult> CreateBlogPost([FromBody] BlogPostDto blogDto)
         {
 
-            var blogPost = _mapper.Map<BlogPostDTO, BlogPost>(blogDto);
+            var blogPost = _mapper.Map<BlogPostDto, BlogPost>(blogDto);
 
             var createdBlogPost = _blogPostService.CreateBlogPost(blogPost);
 
-            var responseDto = _mapper.Map<BlogPost, BlogPostDTO>(createdBlogPost);
+            var responseDto = _mapper.Map<BlogPost, BlogPostDto>(createdBlogPost);
 
             return Ok("Success");
 

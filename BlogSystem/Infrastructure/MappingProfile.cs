@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using BlogSystem.Api.DTO;
 using BlogSystem.Areas.Identity.Data;
+using BlogSystem.Core.DTO;
 using BlogSystem.Core.Models;
 
 namespace BlogSystem.Infrastructure
@@ -10,8 +10,8 @@ namespace BlogSystem.Infrastructure
         public MappingProfile()
         {
 
-            CreateMap<BlogPostDTO, BlogPost>();
-            CreateMap<BlogPost, BlogPostDTO>();
+            CreateMap<BlogPostDto, BlogPost>();
+            CreateMap<BlogPost, BlogPostDto>();
             CreateMap<Comment, CommentDTO>();
             CreateMap<CommentDTO, Comment>();
             CreateMap<ReplyCommentDTO, Comment>();

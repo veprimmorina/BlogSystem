@@ -2,8 +2,8 @@ using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using BlogSystem.Api.Controllers;
-using BlogSystem.Api.DTO;
 using BlogSystem.Controllers;
+using BlogSystem.Core.DTO;
 using BlogSystem.Core.Models;
 using BlogSystem.Core.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +41,7 @@ namespace BlogSystem.Api.Tests
         public async Task CreateBlogPost_ValidBlogPost_ReturnsOk()
         {
 
-            var blogDto = new BlogPostDTO
+            var blogDto = new BlogPostDto
             {
                 Title = "Sample Blog Post",
                 Content = "This is the content of the blog post.",
@@ -55,7 +55,7 @@ namespace BlogSystem.Api.Tests
                
             };
 
-            _mapperMock.Setup(m => m.Map<BlogPostDTO, BlogPost>(blogDto))
+            _mapperMock.Setup(m => m.Map<BlogPostDto, BlogPost>(blogDto))
                 .Returns(blogPost);
 
             _blogServiceMock.Setup(bs => bs.CreateBlogPost(blogPost))

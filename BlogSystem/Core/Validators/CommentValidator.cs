@@ -1,4 +1,4 @@
-﻿using BlogSystem.Api.DTO;
+﻿using BlogSystem.Core.DTO;
 using FluentValidation;
 
 namespace BlogSystem.Core.Validators

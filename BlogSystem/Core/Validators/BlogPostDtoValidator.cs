@@ -1,9 +1,9 @@
-﻿using BlogSystem.Api.DTO;
+﻿using BlogSystem.Core.DTO;
 using FluentValidation;
 
 namespace BlogSystem.Core.Validators
 {
-    public class BlogPostDtoValidator : AbstractValidator<BlogPostDTO>
+    public class BlogPostDtoValidator : AbstractValidator<BlogPostDto>
     {
         public BlogPostDtoValidator()
         {

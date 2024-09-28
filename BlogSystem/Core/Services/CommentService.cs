@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BlogSystem.Api.DTO;
+using BlogSystem.Core.DTO;
 using BlogSystem.Core.Models;
 using BlogSystem.Infrastructure.Repositories;
 using FluentValidation;
