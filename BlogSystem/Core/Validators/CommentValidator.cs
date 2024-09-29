@@ -4,7 +4,7 @@ using FluentValidation;
 namespace BlogSystem.Core.Validators
 
 {
-    public class CommentValidator : AbstractValidator<CommentDTO>
+    public class CommentValidator : AbstractValidator<CommentDto>
     {
         public CommentValidator()
         {

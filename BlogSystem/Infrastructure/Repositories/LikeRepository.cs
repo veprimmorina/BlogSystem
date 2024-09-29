@@ -1,4 +1,5 @@
 ﻿using BlogSystem.Areas.Identity.Data;
+using BlogSystem.Core.Interfaces.Repositories;
 using BlogSystem.Core.Models;
 
 namespace BlogSystem.Infrastructure.Repositories
@@ -15,8 +16,15 @@ namespace BlogSystem.Infrastructure.Repositories
 
         public async Task AddLike(Like like)
         {
-            _dbContext.Likes.Add(like);
-            await _dbContext.SaveChangesAsync();
+            try
+            {
+                _dbContext.Likes.Add(like);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using BlogSystem.Core.DTO;
+using BlogSystem.Core.Interfaces.Repositories;
+using BlogSystem.Core.Interfaces.Service;
 using BlogSystem.Core.Models;
-using BlogSystem.Infrastructure.Repositories;
 using FluentValidation;
 
 namespace BlogSystem.Core.Services
@@ -10,113 +11,101 @@ namespace BlogSystem.Core.Services
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IEmailService _emailService;
-        private readonly IValidator<CommentDTO> _commentValidator;
+        private readonly IValidator<CommentDto> _commentValidator;
         private readonly IUserService _userService;
         private readonly IBlogService _blogService;
         private readonly IMapper _mapper;
 
-        public CommentService(ICommentRepository commentRepository, IEmailService emailService, IUserService userService, IValidator<CommentDTO> commentValidator, IBlogService blogService, IMapper mapper)
+        public CommentService(ICommentRepository commentRepository, IEmailService emailService, IUserService userService, IValidator<CommentDto> commentValidator, IBlogService blogService, IMapper mapper)
         {
-
             _commentRepository = commentRepository;
             _emailService = emailService;
             _userService = userService;
             _blogService = blogService;
             _commentValidator = commentValidator;
             _mapper = mapper;
-
         }
 
-        public async Task<CommentDTO> CreateComment(CommentDTO userComment)
+        public async Task<CommentDto> CreateComment(CommentDto userComment)
         {
-
             var comment = _mapper.Map<Comment>(userComment);
-
-            validateBlogPost(userComment);
+            ValidateBlogPost(userComment);
 
             await _commentRepository.Add(comment);
 
-            var creatorEmail = await getUserEmail(comment.BlogPostId);
-
-            notifyUser(creatorEmail, "Someone commented on your post", "Someone commented on your post : " + comment.Content);
+            var creatorEmail = await GetUserEmail(comment.BlogPostId);
+            NotifyUser(creatorEmail, "Someone commented on your post", "Someone commented on your post : " + comment.Content);
             
-            return _mapper.Map<CommentDTO>(comment);
-
+            return _mapper.Map<CommentDto>(comment);
         }
 
-        public bool validateBlogPost(CommentDTO comment)
+        public bool ValidateBlogPost(CommentDto comment)
         {
-
             var validationResult = _commentValidator.Validate(comment);
+
             if (!validationResult.IsValid)
             {
                 throw new ValidationException(validationResult.Errors);
             }
 
             return true;
-
         }
 
-        public async Task<String> AddReply(CommentDTO replyDto)
+        public async Task<string> AddReply(CommentDto replyDto)
         {
+            if (replyDto == null)
+            {
+                return "Reply can not be null!";
+            }
 
             var reply = _mapper.Map<Comment>(replyDto);
        
-                if (await _commentRepository.checkIfExists(replyDto.ParentCommentId) == false)
-                {
-                    throw new Exception("Parent comment not found");
-                }
+            if (await _commentRepository.checkIfExists(replyDto.ParentCommentId) == false)
+            {
+                return "Parent comment not found";
+            }
 
             reply.ParentCommentId = replyDto.ParentCommentId;
             var createdReply = await _commentRepository.Add(reply);
 
-            var user = await getCommentById(replyDto.ParentCommentId);
+            var user = await GetCommentById(replyDto.ParentCommentId);
             
-            notifyUser(user.Email, "Someone replied to your comment" , "Someone replied to your comment : " + createdReply.Content);
+            NotifyUser(user.Email, "Someone replied to your comment" , "Someone replied to your comment : " + createdReply.Content);
             return user.Email;
 
         }
 
-        public void notifyUser(string email, string subject, string content) {
-
-            _emailService.notify(email, subject, content);
-
+        public void NotifyUser(string email, string subject, string content)
+        {
+            _emailService.Notify(email, subject, content);
         }
 
-        public async Task<string> getUserEmail(int id)
+        public async Task<string> GetUserEmail(int id)
         {
-
             var blogPost = await _blogService.GetBlogDataById(id);
             var creatorEmail = await _userService.GetUserEmailById(blogPost.CreatorId);
+
             return creatorEmail;
 
         }
 
-        public async Task<IEnumerable<CommentDTO>> GetAllComments()
+        public async Task<IEnumerable<CommentDto>> GetAllComments()
         {
-
             var comments = await _commentRepository.GetAllComments();
+            var commentList = _mapper.Map<IEnumerable<CommentDto>>(comments);
 
-            var CommentDTOs = _mapper.Map<IEnumerable<CommentDTO>>(comments);
-
-            return CommentDTOs;
+            return commentList;
 
         }
 
-        public Task<Comment> getCommentById(int? commentId)
+        public Task<Comment> GetCommentById(int? commentId)
         {
-
             return _commentRepository.GetById(commentId);
-
         }
 
         public async Task sendEmailNotification(string email, string subject, string body)
         {
-
-            _emailService.notify(email, subject, body);
-
+            _emailService.Notify(email, subject, body);
         }
-
     }
-
 }

@@ -1,7 +1,6 @@
-﻿using AutoMapper;
-using BlogSystem.Core.DTO;
+﻿using BlogSystem.Core.DTO;
+using BlogSystem.Core.Interfaces.Service;
 using BlogSystem.Core.Models;
-using BlogSystem.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,137 +12,73 @@ namespace BlogSystem.Controllers
     {
         private readonly IBlogService _blogPostService;
         private readonly ILikeService _likeService;
-        private readonly IUserService _userService;
-        private readonly IMapper _mapper;
 
-        public BlogPostsController(IBlogService blogPostService, IMapper mapper, ILikeService likeService, IUserService userService)
+        public BlogPostsController(IBlogService blogPostService, ILikeService likeService)
         {
-
             _blogPostService = blogPostService;
             _likeService = likeService;
-            _userService = userService;
-            _mapper = mapper;
-
         }
 
         [Authorize(Roles = "Administrator,Creator")]
         [HttpPost]
         public async Task<IActionResult> CreateBlogPost([FromBody] BlogPostDto blogDto)
         {
-
-            var blogPost = _mapper.Map<BlogPostDto, BlogPost>(blogDto);
-
-            var createdBlogPost = _blogPostService.CreateBlogPost(blogPost);
-
-            var responseDto = _mapper.Map<BlogPost, BlogPostDto>(createdBlogPost);
-
-            return Ok("Success");
-
+            var response = await _blogPostService.CreateBlogPost(blogDto);
+            return Ok(response);
         }
 
         [Authorize(Roles = "Administrator")]
         [HttpGet]
         public async Task<IActionResult> GetAllBlogPosts()
         {
-
-            var blogPosts = await _blogPostService.GetAllBlogPostsAsync();
-            return Ok(blogPosts);
-
+            var response = await _blogPostService.GetAllBlogPostsAsync();
+            return Ok(response);
         }
 
         [Authorize(Roles = "Administrator,Creator")]
         [HttpPut("{postId}")]
         public async Task<IActionResult> UpdateBlogPost(int postId, [FromBody] BlogPost updateDto)
         {
-
-            var success = await _blogPostService.UpdateBlogPost(postId, updateDto);
-
-            if (success)
-            {
-                return NoContent(); 
-            }
-
-            return NotFound(); 
-
+            var response = await _blogPostService.UpdateBlogPost(postId, updateDto);
+            return Ok(response); 
         }
 
         [Authorize(Roles = "Administrator,Creator")]
         [HttpDelete("{postId}")]
         public async Task<IActionResult> DeleteBlogPost(int postId)
         {
-
-            var success = await _blogPostService.DeleteBlogPost(postId);
-
-            if (success)
-            {
-                return NoContent(); 
-            }
-
-            return NotFound(); 
-
+            var response = await _blogPostService.DeleteBlogPost(postId);
+            return Ok(response); 
         }
 
         [Authorize(Roles = "Administrator")]
         [HttpGet("{id}")]
         public async Task<BlogPost> GetBlogPost(int id)
         {
-
-            return await _blogPostService.GetBlogDataById(id);
-
+            var response = await _blogPostService.GetBlogDataById(id);
+            return response;
         }
 
         [HttpGet("search")]
         public async Task<IActionResult> SearchBlogPostsByName([FromQuery] string searchTerm)
         {
-
-            if (string.IsNullOrWhiteSpace(searchTerm))
-            {
-                return BadRequest("Search term cannot be empty.");
-            }
-
-            var searchResults = await _blogPostService.SearchBlogPostsByTitle(searchTerm);
-
-            if (searchResults.Count == 0)
-            {
-                return NotFound("No matching blog posts found.");
-            }
-
-            return Ok(searchResults);
+            var response = await _blogPostService.SearchBlogPostsByTitle(searchTerm);
+            return Ok(response);
 
         }
 
         [HttpGet("filter")]
         public async Task<IActionResult> FilterBlogPosts([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate, [FromQuery] List<string> tags)
         {
-
-            var filteredBlogPosts = await _blogPostService.FilterBlogPosts(startDate, endDate, tags);
-
-            if (filteredBlogPosts.Count == 0)
-            {
-                return NotFound("No matching blog posts found.");
-            }
-
-            return Ok(filteredBlogPosts);
-
+            var response = await _blogPostService.FilterBlogPosts(startDate, endDate, tags);
+            return Ok(response);
         }
-        
 
         [HttpGet("like")]
-        public async Task<String> likeBlogPost(int postId)
+        public async Task<IActionResult> LikeBlogPost(int postId)
         {
-
-            var token = _userService.getTokenFromAuthorizationHeader(HttpContext);
-            var userId = await _userService.GetUserIdFromToken(token);
-
-            if (userId == null)
-            {
-                return "Log in first";
-            }
-
-            _likeService.addLike(userId, postId);
-
-            return "Liked";
-
+            var response = _likeService.AddLike(postId);
+            return Ok(response);
         }
        
     }

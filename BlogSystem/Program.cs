@@ -12,6 +12,8 @@ using FluentValidation.AspNetCore;
 using BlogSystem.Infrastructure.Repositories;
 using BlogSystem.Core.Validators;
 using BlogSystem.Core.DTO;
+using BlogSystem.Core.Interfaces.Repositories;
+using BlogSystem.Core.Interfaces.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");

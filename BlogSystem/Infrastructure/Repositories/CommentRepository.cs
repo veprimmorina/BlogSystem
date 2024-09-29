@@ -1,6 +1,6 @@
 ﻿using BlogSystem.Areas.Identity.Data;
+using BlogSystem.Core.Interfaces.Repositories;
 using BlogSystem.Core.Models;
-using BlogSystem.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 public class CommentRepository : ICommentRepository
@@ -14,24 +14,53 @@ public class CommentRepository : ICommentRepository
 
     public async Task<Comment> Add(Comment comment)
     {
-        _dbContext.Comments.Add(comment);
-        await _dbContext.SaveChangesAsync();
-        return comment;
+        try
+        {
+            _dbContext.Comments.Add(comment);
+            await _dbContext.SaveChangesAsync();
+
+            return comment;
+        }
+        catch(Exception ex)
+        {
+            throw new Exception(ex.Message, ex);
+        }
     }
 
     public async Task<bool> checkIfExists(int? id)
     {
-          return await _dbContext.Comments.AnyAsync(c => c.Id == id);
+        try
+        {
+            return await _dbContext.Comments.AnyAsync(c => c.Id == id);
+        }
+        catch(Exception ex)
+        {
+            throw new Exception(ex.Message, ex);
+        }
     }
 
     public async Task<IEnumerable<Comment>> GetAllComments()
     {
-        return await _dbContext.Comments.ToListAsync();
+        try
+        {
+            return await _dbContext.Comments.ToListAsync();
+        }
+        catch(Exception ex)
+        {
+            throw new Exception(ex.Message, ex);
+        }
     }
 
     public async Task<Comment> GetById(int? id)
     {
-        return await _dbContext.Comments.FindAsync(id);
+        try
+        {
+            return await _dbContext.Comments.FindAsync(id);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message, ex);
+        }
     }
 
 }

@@ -1,4 +1,4 @@
-﻿using BlogSystem.Core.Services;
+﻿using BlogSystem.Core.Interfaces.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogSystem.Api.Controllers
@@ -11,17 +11,13 @@ namespace BlogSystem.Api.Controllers
 
         public EmailController(IEmailService emailService)
         {
-
             _emailService = emailService;
-
         }
 
         [HttpPost]
-        public void notifyUser(string toEmail, string subject, string body)
+        public void NotifyUser(string toEmail, string subject, string body)
         {
-            
-            _emailService.notify(toEmail, subject, body);
-
+            _emailService.Notify(toEmail, subject, body);
         }
     }
 }

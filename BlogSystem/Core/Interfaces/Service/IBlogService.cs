@@ -1,14 +1,14 @@
 ﻿using BlogSystem.Core.DTO;
 using BlogSystem.Core.Models;
 
-namespace BlogSystem.Core.Services
+namespace BlogSystem.Core.Interfaces.Service
 {
     public interface IBlogService
     {
-        BlogPost CreateBlogPost(BlogPost blogPost);
-        public  Task<List<BlogPostDto>> GetAllBlogPostsAsync();
+        public Task<string> CreateBlogPost(BlogPostDto blogPost);
+        public Task<List<BlogPostDto>> GetAllBlogPostsAsync();
 
-        public  Task<bool> UpdateBlogPost(int postId, BlogPost updateDto);
+        public Task<bool> UpdateBlogPost(int postId, BlogPost updateDto);
 
         public Task<bool> DeleteBlogPost(int postId);
 

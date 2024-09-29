@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using BlogSystem.Core.DTO;
+using BlogSystem.Core.Interfaces.Repositories;
+using BlogSystem.Core.Interfaces.Service;
 using BlogSystem.Core.Models;
-using BlogSystem.Infrastructure.Repositories;
 using FluentValidation;
 
 namespace BlogSystem.Core.Services
@@ -14,39 +15,34 @@ namespace BlogSystem.Core.Services
 
         public BlogPostService(IBlogPostRepository blogPostRepository, IValidator<BlogPostDto> BlogPostDTOValidator, IMapper mapper)
         {
-
             _blogPostRepository = blogPostRepository;
             _BlogPostDTOValidator = BlogPostDTOValidator;
             _mapper = mapper;
-
         }
 
-        public BlogPost CreateBlogPost(BlogPost blogPost)
+        public async Task<string> CreateBlogPost(BlogPostDto blogPost)
         {
+            ValidateBlogPost(blogPost);
+            var blogPostDTO = _mapper.Map<BlogPostDto, BlogPost>(blogPost);
+            await _blogPostRepository.Create(blogPostDTO);
 
-            var BlogPostDTO = _mapper.Map<BlogPost, BlogPostDto>(blogPost);
-            validateBlogPost(BlogPostDTO);
-            return _blogPostRepository.Create(blogPost);
-
+            return "Created Succesfully";
         }
 
-        public bool validateBlogPost(BlogPostDto BlogPostDTO)
+        public bool ValidateBlogPost(BlogPostDto createBlogPost)
         {
-
-            var validationResult = _BlogPostDTOValidator.Validate(BlogPostDTO);
+            var validationResult = _BlogPostDTOValidator.Validate(createBlogPost);
 
             if (!validationResult.IsValid)
             {
-                throw new ValidationException(validationResult.Errors);
+                return false;
             }
 
             return true;
-
         }
 
         public async Task<bool> DeleteBlogPost(int postId)
         {
-
             var existingBlogPost = await _blogPostRepository.GetBlogPost(postId);
 
             if (existingBlogPost == null)
@@ -55,44 +51,50 @@ namespace BlogSystem.Core.Services
             }
 
             await _blogPostRepository.DeleteBlogPost(existingBlogPost);
-            return true;
 
+            return true;
         }
 
         public async Task<List<BlogPostDto>> FilterBlogPosts(DateTime? startDate, DateTime? endDate, List<string> tags)
         {
+            var blogPosts = _blogPostRepository.GetBlogPostAsQueryable();
 
-            var blogPosts = await _blogPostRepository.FilterBlogPosts(startDate, endDate, tags);
+            if (startDate.HasValue)
+            {
+                blogPosts = blogPosts.Where(bp => bp.PublicationDate >= startDate);
+            }
+            if (endDate.HasValue)
+            {
+                blogPosts = blogPosts.Where(bp => bp.PublicationDate <= endDate);
+            }
+
+            if (tags != null && tags.Any())
+            {
+                blogPosts = blogPosts.Where(bp => bp.Tags.Any(tag => tags.Contains(tag.TagName)));
+            }
+
             return _mapper.Map<List<BlogPostDto>>(blogPosts);
-
         }
 
         public async Task<List<BlogPostDto>> GetAllBlogPostsAsync()
         {
-
             var blogPosts = await _blogPostRepository.GetAllBlogPostsAsync();
             return _mapper.Map<List<BlogPostDto>>(blogPosts);
-
         }
 
         public async Task<BlogPost> GetBlogDataById(int id)
         {
-
            return await _blogPostRepository.GetBlogPostById(id);
-
         }
 
         public async Task<List<BlogPostDto>> SearchBlogPostsByTitle(string searchTerm)
         {
-
             var blogPosts = await _blogPostRepository.SearchBlogPostsByTitle(searchTerm);
             return _mapper.Map<List<BlogPostDto>>(blogPosts);
-
         }
 
         public async Task<bool> UpdateBlogPost(int postId, BlogPost updateDto)
         {
-
             var existingBlogPost = await _blogPostRepository.GetBlogPost(postId);
 
             if (existingBlogPost == null)
@@ -105,7 +107,6 @@ namespace BlogSystem.Core.Services
 
             await _blogPostRepository.UpdateBlogPost(existingBlogPost);
             return true;
-
         }
     }
 }

@@ -1,60 +1,38 @@
-﻿using AutoMapper;
-using BlogSystem.Core.DTO;
-using BlogSystem.Core.Services;
+﻿using BlogSystem.Core.DTO;
+using BlogSystem.Core.Interfaces.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogSystem.Api.Controllers
 {
     public class CommentController : Controller
     {
-
         private readonly ICommentService _commentService;
 
         public CommentController(ICommentService commentService)
         {
-
             _commentService = commentService;
-
         }
 
-        [HttpPost("comment")]
-        public async Task<String> CreateComment([FromBody] CommentDTO commentDto)
+        [HttpPost("createComment")]
+        public async Task<IActionResult> CreateComment([FromBody] CommentDto commentDto)
         {
-
-            if (commentDto == null)
-            {
-                return "BadRequest";
-            }
-
-            var createdComment = await _commentService.CreateComment(commentDto);
-
-            return "Created";
-
+            var response = await _commentService.CreateComment(commentDto);
+            return Ok(response);
         }
 
-        [HttpGet("comments")]
+        [HttpGet("getAll")]
         public async Task<IActionResult> GetAllComments()
         {
-
-            var comments = await _commentService.GetAllComments();
-            return Ok(comments);
-
+            var response = await _commentService.GetAllComments();
+            return Ok(response);
         }
 
         [HttpPost("reply")]
-        public async Task<String> AddReply([FromBody] CommentDTO replyDto)
+        public async Task<IActionResult> AddReply([FromBody] CommentDto replyDto)
         {
-
-            if (replyDto == null)
-            {
-                return "Reply was not made";
-            }
-
-            var reply = await _commentService.AddReply(replyDto);
-            return reply;
-
+            var response = await _commentService.AddReply(replyDto);
+            return Ok(response);
         }
-
     }
 
 }

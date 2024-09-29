@@ -1,12 +1,13 @@
 ﻿using System.Net.Mail;
 using System.Net;
+using BlogSystem.Core.Interfaces.Service;
 
 namespace BlogSystem.Core.Services
 {
     public class EmailService : IEmailService
     {
 
-        public void notify(string toEmail, string subject, string body)
+        public void Notify(string toEmail, string subject, string body)
         {
 
             MailMessage mailMessage = new MailMessage

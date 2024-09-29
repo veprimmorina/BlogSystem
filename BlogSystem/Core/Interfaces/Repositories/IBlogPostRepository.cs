@@ -1,10 +1,10 @@
 ﻿using BlogSystem.Core.Models;
 
-namespace BlogSystem.Infrastructure.Repositories
+namespace BlogSystem.Core.Interfaces.Repositories
 {
     public interface IBlogPostRepository
     {
-        BlogPost Create(BlogPost blogPost);
+        public Task Create(BlogPost blogPost);
 
         public Task<List<BlogPost>> GetAllBlogPostsAsync();
 
@@ -16,7 +16,7 @@ namespace BlogSystem.Infrastructure.Repositories
 
         public Task<List<BlogPost>> SearchBlogPostsByTitle(string searchTerm);
 
-        public Task<List<BlogPost>> FilterBlogPosts(DateTime? startDate, DateTime? endDate, List<string> tags);
+        public IQueryable<BlogPost> GetBlogPostAsQueryable();
 
         public Task<BlogPost> GetBlogPostById(int id);
 

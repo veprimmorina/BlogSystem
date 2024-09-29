@@ -1,6 +1,6 @@
 ﻿using BlogSystem.Core.Models;
 
-namespace BlogSystem.Infrastructure.Repositories
+namespace BlogSystem.Core.Interfaces.Repositories
 {
     public interface ILikeRepository
     {

@@ -9,6 +9,5 @@
         public string Content { get; set; }
         public DateTime PublicationDate { get; set; }
         public string CreatorId { get; set; }
-
     }
 }

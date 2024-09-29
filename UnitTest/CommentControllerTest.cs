@@ -1,7 +1,7 @@
 using AutoMapper;
 using BlogSystem.Api.Controllers;
 using BlogSystem.Api.DTO;
-using BlogSystem.Core.Services;
+using BlogSystem.Core.Interfaces.Service;
 using Moq;
 
 namespace BlogSystem.Api.Tests

@@ -12,12 +12,12 @@ namespace BlogSystem.Infrastructure
 
             CreateMap<BlogPostDto, BlogPost>();
             CreateMap<BlogPost, BlogPostDto>();
-            CreateMap<Comment, CommentDTO>();
-            CreateMap<CommentDTO, Comment>();
-            CreateMap<ReplyCommentDTO, Comment>();
-            CreateMap<Comment, ReplyCommentDTO>();
-            CreateMap<UserDTO, ApplicationUser>();
-            CreateMap<ApplicationUser, UserDTO>();
+            CreateMap<Comment, CommentDto>();
+            CreateMap<CommentDto, Comment>();
+            CreateMap<ReplyCommentDto, Comment>();
+            CreateMap<Comment, ReplyCommentDto>();
+            CreateMap<UserDto, ApplicationUser>();
+            CreateMap<ApplicationUser, UserDto>();
 
         }
     }

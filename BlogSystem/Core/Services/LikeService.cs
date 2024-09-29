@@ -1,9 +1,6 @@
-﻿using BlogSystem.Core.Models;
-using BlogSystem.Infrastructure.Repositories;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+﻿using BlogSystem.Core.Interfaces.Repositories;
+using BlogSystem.Core.Interfaces.Service;
+using BlogSystem.Core.Models;
 
 namespace BlogSystem.Core.Services
 {
@@ -16,20 +13,14 @@ namespace BlogSystem.Core.Services
             _likeRepository = likeRepository;
         }
 
-
-        public async Task addLike(string userId, int blogPost)
+        public async Task AddLike(int blogPost)
         {
-
             var like = new Like
             {
-                UserId = userId,
                 BlogPostId = blogPost
             };
 
             await _likeRepository.AddLike(like);
-
         }
-
-
     }
 }
