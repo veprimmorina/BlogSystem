@@ -92,5 +92,3 @@ To build a fully-featured blog platform that allows users to create, manage, and
 
 ---
 
-### Class Diagram:
-![image](https://github.com/user-attachments/assets/your-diagram-link-here)
